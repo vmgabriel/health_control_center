@@ -1,0 +1,129 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "health-control-chackra"
+dynamic = ["version"]
+description = 'This allow to help manage the health of people in house'
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Gabriel Vargas", email = "vmgabriel96@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "pydantic>=2.0",
+  "PyGObject",
+  "pycairo",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0",
+  "pytest-cov",
+  "ruff",
+  "mypy",
+]
+
+[project.gui-scripts]
+gui = "health_control_chackra.__main__:main"
+
+[project.scripts]
+run = "health_control_chackra.__main__:main"
+
+[project.urls]
+Documentation = "https://github.com/Gabriel Vargas/health-control-chackra#readme"
+Issues = "https://github.com/Gabriel Vargas/health-control-chackra/issues"
+Source = "https://github.com/Gabriel Vargas/health-control-chackra"
+
+
+[tool.hatch]
+package-release = false
+
+[tool.hatch.version]
+path = "src/health_control_chackra/__about__.py"
+
+
+[tool.hatch.envs.default]
+installer = "uv"
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+cov = "pytest --cov=health_control_chackra --cov-report=term-missing {args:tests}"
+lint = "ruff check ."
+type-check = "mypy src tests"
+dev = "pip install --break-system-packages -e ."
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/health_control_chackra tests}"
+
+[tool.hatch.envs.test]
+dependencies = [
+  "pytest",
+  "pytest-cov",
+]
+installer = "uv"
+
+[tool.hatch.envs.test.scripts]
+test = "pytest {args:tests}"
+cov = "pytest --cov=health_control_chackra --cov-report=term-missing {args:tests}"
+
+[tool.coverage.run]
+source_pkgs = ["health_control_chackra", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/health_control_chackra/__about__.py",
+]
+
+[tool.hatch.envs.lint]
+dependencies = [
+  "ruff",
+  "mypy",
+]
+installer = "uv"
+
+[tool.hatch.envs.lint.scripts]
+lint = "ruff check ."
+type-check = "mypy src tests"
+fix = "ruff check . --fix"
+
+[tool.coverage.paths]
+health_control_chackra = ["src/health_control_chackra", "*/health_control_chackra/src/health_control_chackra"]
+tests = ["tests", "*/health_control_chackra/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.hatch.envs.dev]
+installer = "uv"
+extra-dependencies = [
+  "ruff",
+  "mypy",
+  "pytest",
+]
+
+[[tool.mypy.overrides]]
+module = ["gi", "gi.*"]
+ignore_missing_imports = true
