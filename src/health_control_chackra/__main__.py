@@ -1,7 +1,7 @@
 import pathlib
-
+import gi
+gi.require_version("Adw", "1")
 from gi.repository import Adw    # type: ignore
-
 from health_control_chackra.ui import main_window
 from health_control_chackra.domain import configuration_repository
 
@@ -22,7 +22,11 @@ class Application(Adw.Application):
             if not self.config_repo.exists():
                 self.config_repo.create_default()
             config = self.config_repo.get_all()
-            win = main_window.MainWindow(app=self, configuration=config)
+            win = main_window.MainWindow(
+                app=self,
+                json_path=_JSON_CONFIGURATION,
+                configuration=config
+            )
         win.present()
 
 

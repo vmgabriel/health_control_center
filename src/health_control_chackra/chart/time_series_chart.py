@@ -19,60 +19,6 @@ DATE_FORMAT = "%Y-%m-%d"
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass
-class TimeSeriesEntry:
-    date: datetime.date
-    value: float
-
-    @classmethod
-    def from_str(cls, date_str: str, value: float) -> Optional["TimeSeriesEntry"]:
-        try:
-            date = datetime.datetime.strptime(date_str, DATE_FORMAT).date()
-            return cls(date=date, value=float(value))
-        except Exception as e:
-            logger.exception(f"Error parsing date {date_str}: {e}")
-            return None
-
-
-@dataclasses.dataclass
-class ChartColors:
-    bg: COLOR_TYPE_RGB
-    grid: COLOR_TYPE_RGB
-    axes: COLOR_TYPE_RGB
-    text: COLOR_TYPE_RGB
-    line: COLOR_TYPE_RGB
-    tooltip_bg: COLOR_TYPE_ARGB
-    tooltip_border: COLOR_TYPE_ARGB
-    tooltip_text: COLOR_TYPE_RGB
-
-
-class ChartStyle:
-    @staticmethod
-    def get_colors(is_dark: bool) -> ChartColors:
-        if is_dark:
-            return ChartColors(
-                bg=(0.1, 0.1, 0.1),
-                grid=(0.3, 0.3, 0.3),
-                axes=(0.7, 0.7, 0.7),
-                text=(0.9, 0.9, 0.9),
-                line=(0.3, 0.6, 1.0),
-                tooltip_bg=(0.2, 0.2, 0.2, 0.95),
-                tooltip_border=(0.6, 0.6, 0.6, 1.0),
-                tooltip_text=(1.0, 1.0, 1.0),
-            )
-        else:
-            return ChartColors(
-                bg=(1.0, 1.0, 1.0),
-                grid=(0.9, 0.9, 0.9),
-                axes=(0.4, 0.4, 0.4),
-                text=(0.1, 0.1, 0.1),
-                line=(0.2, 0.5, 0.8),
-                tooltip_bg=(1.0, 1.0, 1.0, 0.95),
-                tooltip_border=(0.8, 0.8, 0.8, 1.0),
-                tooltip_text=(0.1, 0.1, 0.1),
-            )
-
-
 def scale(
         value: float,
         value_min: float,
@@ -123,13 +69,69 @@ def value_to_y(value: float, margin_top: float, plot_height: float, min_val: flo
 
 
 @dataclasses.dataclass
+class TimeSeriesEntry:
+    date: datetime.date
+    value: float
+
+    @classmethod
+    def from_str(cls, date_str: str | datetime.date, value: float) -> Optional["TimeSeriesEntry"]:
+        try:
+            if isinstance(date_str, datetime.date):
+                return cls(date=date_str, value=float(value))
+            date = datetime.datetime.strptime(date_str, DATE_FORMAT).date()
+            return cls(date=date, value=float(value))
+        except Exception as e:
+            logger.exception(f"Error parsing date {date_str}: {e}")
+            return None
+
+
+@dataclasses.dataclass
+class ChartColors:
+    bg: COLOR_TYPE_RGB
+    grid: COLOR_TYPE_RGB
+    axes: COLOR_TYPE_RGB
+    text: COLOR_TYPE_RGB
+    line: COLOR_TYPE_RGB
+    tooltip_bg: COLOR_TYPE_ARGB
+    tooltip_border: COLOR_TYPE_ARGB
+    tooltip_text: COLOR_TYPE_RGB
+
+
+class ChartStyle:
+    @staticmethod
+    def get_colors(is_dark: bool) -> ChartColors:
+        if is_dark:
+            return ChartColors(
+                bg=(0.1, 0.1, 0.1),
+                grid=(0.3, 0.3, 0.3),
+                axes=(0.7, 0.7, 0.7),
+                text=(0.9, 0.9, 0.9),
+                line=(0.3, 0.6, 1.0),
+                tooltip_bg=(0.2, 0.2, 0.2, 0.95),
+                tooltip_border=(0.6, 0.6, 0.6, 1.0),
+                tooltip_text=(1.0, 1.0, 1.0),
+            )
+        else:
+            return ChartColors(
+                bg=(1.0, 1.0, 1.0),
+                grid=(0.9, 0.9, 0.9),
+                axes=(0.4, 0.4, 0.4),
+                text=(0.1, 0.1, 0.1),
+                line=(0.2, 0.5, 0.8),
+                tooltip_bg=(1.0, 1.0, 1.0, 0.95),
+                tooltip_border=(0.8, 0.8, 0.8, 1.0),
+                tooltip_text=(0.1, 0.1, 0.1),
+            )
+
+
+@dataclasses.dataclass
 class ChartConfig:
     title: str = "Graph"
     x_label: str = "Date"
     y_label: str = "Value"
     y_format: str = "{:.1f}"
     line_color: Tuple[float, float, float] = (0.2, 0.5, 0.8)
-    tooltip_formatter: Callable[[datetime.date, float], str] = lambda date, weight: ""
+    tooltip_formatter: Callable[[datetime.date, float], str] | None = None
 
     def __post_init__(self) -> None:
         if self.tooltip_formatter is None:

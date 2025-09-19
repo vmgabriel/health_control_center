@@ -11,15 +11,20 @@ from health_control_chackra.chart import time_series_chart  # noqa: E402
 from health_control_chackra.dialog import configuration_dialog, add_weight_dialog  # noqa: E402
 
 
-_JSON_CONFIGURATION = pathlib.Path(__file__).parent / "configuration.json"
 logger = logging.getLogger(__name__)
 
 
 class MainWindow(Adw.ApplicationWindow):
     banner: Adw.Banner | None = None
 
-    def __init__(self, app, configuration: dict[str, str] | None = None):
+    def __init__(
+            self,
+            app: Adw.Application,
+            json_path: pathlib.Path,
+            configuration: dict[str, str] | None = None
+    ) -> None:
         super().__init__(application=app)
+        self.json_path = json_path
         self.configuration = configuration or {}
         self.current_file_path: pathlib.Path | None = None
 
@@ -119,7 +124,7 @@ class MainWindow(Adw.ApplicationWindow):
 
 
     def on_add_weight_clicked(self, button: Gtk.Button) -> None:
-        def on_save(date: str, weight: float) -> None:
+        def on_save(date: str | datetime.date, weight: float) -> None:
             entry = time_series_chart.TimeSeriesEntry.from_str(date, weight)
             if not entry:
                 return
@@ -127,9 +132,14 @@ class MainWindow(Adw.ApplicationWindow):
             self.chart.entries.sort(key=lambda x: x.date)
 
             if self.current_file_path:
+                current_date = datetime.datetime.now().date()
+                if isinstance(date, datetime.date):
+                    current_date = date
+                else:
+                    current_date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
                 weight_repository.FileCsvWeightRepository(self.current_file_path).insert(
                     weight=weight,
-                    date=datetime.datetime.strptime(date, "%Y-%m-%d").date()
+                    date=current_date,
                 )
                 logger.info(f"➕ Peso guardado: {date} - {weight} kg")
 
@@ -139,7 +149,7 @@ class MainWindow(Adw.ApplicationWindow):
     def on_configure_clicked(self) -> None:
         def on_save(file_path: str) -> None:
             path = pathlib.Path(file_path)
-            repo = configuration_repository.FileJSONConfigurationRepository(_JSON_CONFIGURATION)
+            repo = configuration_repository.FileJSONConfigurationRepository(self.json_path)
             repo.save(path)
             self.load_data_from_path(path)
 
