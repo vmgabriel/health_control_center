@@ -1,0 +1,184 @@
+# =============================================================================
+# 1. Entornos virtuales
+# =============================================================================
+venv/
+env/
+ENV/
+.venv/
+.venv.*
+env.*/
+.*/env*/
+
+# Hatch
+.hatch/
+hatch.toml
+
+# Pipenv
+Pipfile
+Pipfile.lock
+
+# Poetry
+poetry.lock
+poetry.toml
+.cache/pypoetry/
+
+# Conda
+environment.yml
+conda-env.yml
+
+# General
+virtualenv/
+.pytest_cache/
+.coverage
+.nox/
+
+# =============================================================================
+# 2. Paquetes y distribución
+# =============================================================================
+# Artefactos de build
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+
+# Directorios de instalación
+.installed.cfg
+*.egg-info/
+.installed-tests/
+.develop-eggs/
+
+# =============================================================================
+# 3. Archivos generados por el sistema
+# =============================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.dll
+
+# Linux
+*~
+
+# =============================================================================
+# 4. Logs y archivos temporales
+# =============================================================================
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# =============================================================================
+# 5. IDE / Editores
+# =============================================================================
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# PyCharm / IntelliJ
+.idea/
+*.iml
+*.iws
+
+# Vim
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list/
+tramp
+.\#*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# =============================================================================
+# 6. Variables de entorno y configuración local
+# =============================================================================
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Configuración personalizada que no debe subirse
+config.local.json
+secrets.json
+
+# Pero mantén configuration.json si es parte del repo (por ejemplo, con valores por defecto)
+# Asegúrate de que no tenga datos sensibles
+
+# =============================================================================
+# 7. Testing
+# =============================================================================
+htmlcov/
+.tox/
+.coverage.*
+coverage.xml
+nosetests.xml
+junit.xml
+pytest_debug.log
+
+# =============================================================================
+# 8. Python
+# =============================================================================
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*$py.pth
+
+# Cython debug symbols
+cython_debug/
+
+# MyPy
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# Sphinx
+docs/_build/
+
+# Jupyter
+.ipynb_checkpoints
+
+# =============================================================================
+# 9. Aplicaciones de escritorio (GTK/GNOME)
+# =============================================================================
+# Archivos temporales de desarrollo
+*.local/share/glib-2.0/schemas/*.xml
+
+# Sesiones de depuración
+gdb_history
+
+# =============================================================================
+# 10. Resultados de análisis
+# =============================================================================
+.sonar/
+.sonarqube/
